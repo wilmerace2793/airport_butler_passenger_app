@@ -103,7 +103,6 @@ class LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 40),
 
-                // 🔹 Registro
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
