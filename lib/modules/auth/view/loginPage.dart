@@ -1,31 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../stores/auth.dart';
 import '../widgets/socialButton.dart';
 import '../widgets/loginForm.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => LoginPageState();
-}
-
-class LoginPageState extends State<LoginPage> {
   static const Color primaryPurple = Color(0xFF6B589C);
   static const Color textGray = Color(0xFF8B8B8B);
-
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final FocusNode passwordFocus = FocusNode();
-
-  bool obscurePassword = true;
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    passwordFocus.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +27,11 @@ class LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 40),
+
+                /// --- Botones sociales ---
                 SocialButton(
                   text: 'Continue with Google',
-                  assetPath: 'lib/assets/svg/google.svg'
+                  assetPath: 'lib/assets/svg/google.svg',
                 ),
                 const SizedBox(height: 16),
                 SocialButton(
@@ -68,18 +53,30 @@ class LoginPageState extends State<LoginPage> {
                 buildOrDivider(),
                 const SizedBox(height: 40),
 
-                LoginForm(
-                  emailController: emailController,
-                  passwordController: passwordController,
-                ),
+                const LoginForm(),
 
                 const SizedBox(height: 24),
+
+                /// --- Botón Sign In ---
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      debugPrint("Email: ${emailController.text}");
-                      debugPrint("Password: ${passwordController.text}");
+                      final authStore = context.read<AuthStore>();
+
+                      if (authStore.login()) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("✅ Welcome ${authStore.email}"),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("❌ Add email y password"),
+                          ),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -120,9 +117,9 @@ class LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 40),
                 RichText(
                   textAlign: TextAlign.center,
-                  text: TextSpan(
-                    style: const TextStyle(color: textGray, fontSize: 14), // ✅ sin const
-                    children: const [
+                  text: const TextSpan(
+                    style: TextStyle(color: textGray, fontSize: 14),
+                    children: [
                       TextSpan(text: 'By continuing you agree to our\n'),
                       TextSpan(
                         text: 'Terms of Service',

@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../stores/auth.dart';
 
 class LoginForm extends StatefulWidget {
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-
-  const LoginForm({
-    super.key,
-    required this.emailController,
-    required this.passwordController,
-  });
+  const LoginForm({super.key});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -26,22 +21,28 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final authStore = context.watch<AuthStore>();
+
     return Column(
       children: [
         TextField(
-          controller: widget.emailController,
+          onChanged: (value) => authStore.setEmail(value),
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             labelText: 'Email',
             hintText: 'you@example.com',
             filled: true,
-            hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+            hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+            // 👇 muestra en tiempo real lo que hay en el store
+            suffixIcon: authStore.email.isNotEmpty
+                ? const Icon(Icons.check_circle, color: Colors.green)
+                : null,
           ),
         ),
         const SizedBox(height: 16),
         TextField(
-          controller: widget.passwordController,
+          onChanged: (value) => authStore.setPassword(value), // ✅ se guarda en store
           focusNode: passwordFocus,
           obscureText: obscurePassword,
           textInputAction: TextInputAction.done,
