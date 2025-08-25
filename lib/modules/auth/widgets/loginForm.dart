@@ -34,7 +34,6 @@ class _LoginFormState extends State<LoginForm> {
             hintText: 'you@example.com',
             filled: true,
             hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-            // 👇 muestra en tiempo real lo que hay en el store
             suffixIcon: authStore.email.isNotEmpty
                 ? const Icon(Icons.check_circle, color: Colors.green)
                 : null,
@@ -42,7 +41,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
         const SizedBox(height: 16),
         TextField(
-          onChanged: (value) => authStore.setPassword(value), // ✅ se guarda en store
+          onChanged: (value) => authStore.setPassword(value),
           focusNode: passwordFocus,
           obscureText: obscurePassword,
           textInputAction: TextInputAction.done,
